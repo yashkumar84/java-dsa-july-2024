@@ -70,15 +70,17 @@ class Account{
     }
   }
 
-  public void transfer(Account toAccount , double amount){
+  public boolean transfer(Account toAccount , double amount){
     if(amount > 0 && amount <= balance){
       balance-=amount;
       transactionHistory.add("Transfer Balance " + amount + "To " + toAccount.getAccountHolderName() );
       toAccount.balance += amount;
       toAccount.transactionHistory.add("Recieved Balance " + amount + " From " + accountHolderName);
       System.out.println("Amount Transfer SuccessFull");
+      return true;
     }else{
       System.out.println("Invalid Or Insufficient Balance");
+      return false;
     }
   }
   @Override
@@ -153,20 +155,44 @@ public class BankMangementSystem{
       System.out.println("Press 6 for Check the Transaction History");
       System.out.println("Press 7 For Checking Account details");
       System.out.println("Press 8 for Transfer Money");
-      System.out.println("Press 9 For exit");
+      System.out.println("Press 9 For Change the Pin Of Account");
+      System.out.println("Press 10 For Check The Balance");
+      System.out.println("Press 11 For exit");
       System.out.println("Please Enter Your Choice");
       choice = sc.nextInt();
       switch (choice) {
         case 1:
           createAccount();
           break;
+        case 2 :
+          deleteAccount();
+          break;
         case 3 : 
           deposit();
           break;
-        case 4:
+        case 4 : 
+          withdraw();
+          break;
+        case 5 : 
+          getAllAccounts();
+          break;
+        case 6:
             transactionHistory();
             break;
+        case 7 : 
+            checkAccountDetails();
+            break;
+        
+        case 8:
+          transferMoney();
+          break;
         case 9:
+            changePin();
+            break;
+        case 10:
+            checkBalance();
+            break;
+        case 11:
             exit = true;
             break;
         default:
@@ -177,8 +203,9 @@ public class BankMangementSystem{
   }
   static void createAccount(){
       System.out.println("Enter Account Holder Name");
-      String accountHolderName = sc.nextLine();
       sc.nextLine();
+      String accountHolderName = sc.nextLine();
+      
       System.out.println("Enter Acccount Number ");
       int accNumber = sc.nextInt();
       System.out.println("Enter Pin ");
@@ -226,6 +253,75 @@ public class BankMangementSystem{
       account.showAccountTransactionHistory();
     }
 
+  }
+
+  static void checkAccountDetails(){
+    Account account= findAccountByPin();
+    if(account != null){
+     System.out.println(account);
+    }
+  }
+
+  static void getAllAccounts(){
+    bank.showAllAccount();
+  }
+
+  static void deleteAccount(){
+    Account account= findAccountByPin();
+    if(account != null){
+     bank.deleteAccount(account.getAccountNumber());
+    }
+  }
+
+  static void withdraw(){
+    Account account= findAccountByPin();
+    if(account != null){
+      System.out.println("Enter the Amount To Withdraw : ");
+      int amount = sc.nextInt();
+      account.withdraw(amount);
+    }
+  }
+
+  static void transferMoney(){
+      Account fromAccount = findAccountByPin();
+     
+      if(fromAccount != null ){
+        System.out.println("Enter the account Number of Reciever : ");
+        int toacc = sc.nextInt();
+        Account toAccount = bank.findAccount(toacc);
+        if(toAccount ==null){
+          System.out.println("Can Not Transfer Money Because Reciever Account Number is Not Correct");
+          return;
+        }
+        System.out.println("Enter Amount To Transfer: ");
+        double amount = sc.nextDouble();
+        boolean isTransfer = fromAccount.transfer(toAccount, amount);
+        if(isTransfer){
+        System.out.println("Money transfer from " + fromAccount.getAccountHolderName() +"'s Account to "+ toAccount.getAccountHolderName() + "'s Account" );
+        }
+      }else{
+        if(fromAccount == null){
+          System.out.println("You Dont Have Any Account");
+        }
+      }
+  }
+
+  static void changePin(){
+    Account account= findAccountByPin();
+    if(account != null){
+      System.out.println("Enter New Pin : ");
+      int newPin = sc.nextInt();
+      account.setPin(newPin);
+      System.out.println("New Pin Set SuccessFully");
+    }
+  }
+
+
+  static void checkBalance(){
+    Account account= findAccountByPin();
+    if(account != null){
+      System.out.println("The Balance is: "+account.getBalance());
+    }
   }
 }
 
