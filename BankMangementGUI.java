@@ -63,13 +63,15 @@ class Account{
     }
   }
 
-  public void  withdraw(int amount){
+  public boolean  withdraw(int amount){
     if(amount > 0 && amount <= balance){
       balance -= amount;
       transactionHistory.add("Balance Withdraw " + amount);
       System.out.println("Balance WithDraw SuccessFull");
+      return true;
     }else{
       System.out.println("Can not Withdraw Due to Invalid Money Or Insufficient balance");
+      return false;
     }
   }
 
@@ -129,15 +131,16 @@ class Bank{
   }
 
 
-  public void showAllAccount(){
+  public ArrayList<Account> showAllAccount(){
     if(accounts.isEmpty()){
       System.out.println("No Acccount Exists");
-      return;
+      return null;
     }
 
-    for(Account account : accounts){
-      System.out.println(account);
-    }
+    // for(Account account : accounts){
+    //   System.out.println(account);
+    // }
+    return accounts;
   }
 
 }
@@ -149,7 +152,7 @@ public class BankMangementGUI{
   public static void main(String[] args) {
     frame.setSize(800 , 800);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-    // frame.setLocationRelativeTo(null);
+    frame.setLocationRelativeTo(null);
 
 
     placeComponents();
@@ -161,22 +164,75 @@ public class BankMangementGUI{
     static void placeComponents(){
       JPanel panel = new JPanel();
     // panel.setBounds(120, 200, 300, 300);
+    panel.setLayout(null);
     frame.add(panel);
    
         JButton createAccountButton = new JButton("Create Account");
-        // createAccountButton.setBounds(100, 200, 100, 100);
+        createAccountButton.setBounds(100, 200, 200, 50);
         panel.add(createAccountButton);
         createAccountButton.addActionListener(new ActionListener() {
 
           @Override
           public void actionPerformed(ActionEvent e) {
             createAccountForm();
-            
-          }
+             }
+          
+        });
+        JButton deleteAccountButton = new JButton("Delete Account");
+        deleteAccountButton.setBounds(100, 400, 200, 50);
+        panel.add(deleteAccountButton);
+        deleteAccountButton.addActionListener(new ActionListener() {
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            deleteAccountForm();
+             }
+          
+        });
+        JButton showAllAccountsButton = new JButton("Show All Accounts");
+        showAllAccountsButton.setBounds(100, 500, 200, 50);
+        panel.add(showAllAccountsButton);
+        showAllAccountsButton.addActionListener(new ActionListener() {
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            showAllAccounts();
+             }
+          
+        });
+        JButton withdrawButton = new JButton("Withdraw");
+        withdrawButton.setBounds(100, 600, 200, 50);
+        panel.add(withdrawButton);
+        withdrawButton.addActionListener(new ActionListener() {
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            withdrawForm();
+             }
           
         });
 
 
+    }
+
+    static void showAllAccounts(){
+      JFrame showAccountsFrame = new JFrame("Frame");
+      showAccountsFrame.setSize(600 , 600);
+      showAccountsFrame.setLocationRelativeTo(null);
+
+      JPanel panel = new JPanel();
+      showAccountsFrame.add(panel);
+      panel.setLayout(null);
+      ArrayList<Account> accounts = getAllAccounts();
+      int y = 80;
+      for(Account acc : accounts){
+        JLabel accountLabel = new JLabel(acc.toString());
+        accountLabel.setBounds(20, y, 500, 10);
+        panel.add(accountLabel);
+        y+=20;
+      }
+
+      showAccountsFrame.setVisible(true);
     }
 
     static void createAccountForm(){
@@ -244,32 +300,138 @@ public class BankMangementGUI{
 
       createAccountFrame.setVisible(true);
     }
-  
-  static void createAccount(){
-      System.out.println("Enter Account Holder Name");
-      sc.nextLine();
-      String accountHolderName = sc.nextLine();
-      
-      System.out.println("Enter Acccount Number ");
-      int accNumber = sc.nextInt();
-      System.out.println("Enter Pin ");
-      int pin = sc.nextInt();
-      System.out.println("Enter Initial Balance ");
-      double initialBalance = sc.nextDouble();
-      bank.createAccount(accountHolderName, accNumber, initialBalance, pin);
-  }
 
-  static Account findAccountByPin(){
-    System.out.println("Enter the Account Number ");
-    int accNumber = sc.nextInt();
+    static void deleteAccountForm(){
+      JFrame deleteAccountFrame = new JFrame("Form");
+      deleteAccountFrame.setSize(400 , 400);
+      deleteAccountFrame.setLocationRelativeTo(null);
+
+      JPanel panel = new JPanel();
+      deleteAccountFrame.add(panel);
+      panel.setLayout(null);
+
+      JLabel accountNumberLabel = new JLabel("Enter Account Number");
+      accountNumberLabel.setBounds(20, 40, 180, 10);
+      panel.add(accountNumberLabel);
+
+      JTextField accountNumberTextField = new JTextField(20);
+      accountNumberTextField.setBounds(20 , 60 , 200 , 20 );
+     
+      panel.add(accountNumberTextField);
+      JLabel accountPinLabel = new JLabel("Enter Account Pin");
+      accountPinLabel.setBounds(20, 90, 180, 20);
+      panel.add(accountPinLabel);
+
+      JTextField accountPinTextField = new JTextField(20);
+      accountPinTextField.setBounds(20 , 110 , 200 , 20 );
+     
+      panel.add(accountPinTextField);
+
+      JButton DeleteButton = new JButton("Delete");
+      DeleteButton.setBounds(20 , 220 , 100 , 40 );
+        panel.add(DeleteButton);
+
+        DeleteButton.addActionListener(new ActionListener() {
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+          int accNumber = Integer.parseInt(accountNumberTextField.getText());
+          int pin = Integer.parseInt(accountPinTextField.getText());
+          Account account= findAccountByPin(accNumber , pin);
+          if(account != null){
+          bank.deleteAccount(account.getAccountNumber());
+          JOptionPane.showMessageDialog(null, "Account Deleted Successfully");
+         }else{
+          JOptionPane.showMessageDialog(null ,  "Account Not Deleted");
+         }
+         
+          deleteAccountFrame.dispose();
+          }
+          
+        });
+
+      deleteAccountFrame.setVisible(true);
+
+    }
+
+    static void withdrawForm(){
+      JFrame withdrawFrame = new JFrame("Form");
+      withdrawFrame.setSize(400 , 400);
+      withdrawFrame.setLocationRelativeTo(null);
+
+      JPanel panel = new JPanel();
+      withdrawFrame.add(panel);
+      panel.setLayout(null);
+
+      JLabel accountNumberLabel = new JLabel("Enter Account Number");
+      accountNumberLabel.setBounds(20, 40, 180, 10);
+      panel.add(accountNumberLabel);
+
+      JTextField accountNumberTextField = new JTextField(20);
+      accountNumberTextField.setBounds(20 , 60 , 200 , 20 );
+     
+      panel.add(accountNumberTextField);
+      JLabel accountPinLabel = new JLabel("Enter Account Pin");
+      accountPinLabel.setBounds(20, 90, 180, 20);
+      panel.add(accountPinLabel);
+
+      JTextField accountPinTextField = new JTextField(20);
+      accountPinTextField.setBounds(20 , 110 , 200 , 20 );
+     
+      panel.add(accountPinTextField);
+
+      JLabel amountLabel = new JLabel("Enter Amount To WithDraw");
+      amountLabel.setBounds(20, 140, 180, 20);
+      panel.add(amountLabel);
+
+      JTextField amountTextField = new JTextField(20);
+      amountTextField.setBounds(20 , 170 , 200 , 20 );
+     
+      panel.add(amountTextField);
+
+      JButton withdrawButton = new JButton("Withdraw");
+      withdrawButton.setBounds(20 , 220 , 100 , 40 );
+        panel.add(withdrawButton);
+
+        withdrawButton.addActionListener(new ActionListener() {
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+          int accNumber = Integer.parseInt(accountNumberTextField.getText());
+          int pin = Integer.parseInt(accountPinTextField.getText());
+          int amount = Integer.parseInt(amountTextField.getText());
+          Account account= findAccountByPin(accNumber , pin);
+          if(account != null){
+          if(account.withdraw(amount)){
+          JOptionPane.showMessageDialog(null, "Money Withdrawl Successfull");
+          }else{
+            JOptionPane.showMessageDialog(null, "Money Withdrawl failed");
+          }
+         }else{
+          JOptionPane.showMessageDialog(null ,  "Account Not Found");
+         }
+         
+          withdrawFrame.dispose();
+          }
+          
+        });
+
+      withdrawFrame.setVisible(true);
+    }
+  
+  
+
+  
+
+  static Account findAccountByPin(int accNumber ,int pin){
+   
+    
     Account account = bank.findAccount(accNumber);
     if(account != null){
-    System.out.println("Enter the Pin");
-    int pin = sc.nextInt();
+    
     if(account.matchPin(pin)){
       return account;
     }else{
-      System.out.println("Invalid Pin");
       return null;
     }
   }else{
@@ -280,92 +442,92 @@ public class BankMangementGUI{
     
   }
 
-  static void deposit(){
-    Account account = findAccountByPin();
-    if(account != null){
-    System.out.println("Enter Amount For Deposit ");
-    double amount = sc.nextDouble();
-    account.deposit(amount);
-    }else{
-      System.out.println("Invalid Credentials");
-    }
+  // static void deposit(){
+  //   Account account = findAccountByPin();
+  //   if(account != null){
+  //   System.out.println("Enter Amount For Deposit ");
+  //   double amount = sc.nextDouble();
+  //   account.deposit(amount);
+  //   }else{
+  //     System.out.println("Invalid Credentials");
+  //   }
+  // }
+
+  // static void transactionHistory(){
+  //   Account account= findAccountByPin();
+  //   if(account != null){
+  //     account.showAccountTransactionHistory();
+  //   }
+
+  // }
+
+  // static void checkAccountDetails(){
+  //   Account account= findAccountByPin();
+  //   if(account != null){
+  //    System.out.println(account);
+  //   }
+  // }
+
+  static ArrayList<Account> getAllAccounts(){
+    return bank.showAllAccount();
   }
 
-  static void transactionHistory(){
-    Account account= findAccountByPin();
-    if(account != null){
-      account.showAccountTransactionHistory();
-    }
+  // static void deleteAccount(){
+  //   Account account= findAccountByPin();
+  //   if(account != null){
+  //    bank.deleteAccount(account.getAccountNumber());
+  //   }
+  // }
 
-  }
+  // static void withdraw(){
+  //   Account account= findAccountByPin();
+  //   if(account != null){
+  //     System.out.println("Enter the Amount To Withdraw : ");
+  //     int amount = sc.nextInt();
+  //     account.withdraw(amount);
+  //   }
+  // }
 
-  static void checkAccountDetails(){
-    Account account= findAccountByPin();
-    if(account != null){
-     System.out.println(account);
-    }
-  }
-
-  static void getAllAccounts(){
-    bank.showAllAccount();
-  }
-
-  static void deleteAccount(){
-    Account account= findAccountByPin();
-    if(account != null){
-     bank.deleteAccount(account.getAccountNumber());
-    }
-  }
-
-  static void withdraw(){
-    Account account= findAccountByPin();
-    if(account != null){
-      System.out.println("Enter the Amount To Withdraw : ");
-      int amount = sc.nextInt();
-      account.withdraw(amount);
-    }
-  }
-
-  static void transferMoney(){
-      Account fromAccount = findAccountByPin();
+  // static void transferMoney(){
+  //     Account fromAccount = findAccountByPin();
      
-      if(fromAccount != null ){
-        System.out.println("Enter the account Number of Reciever : ");
-        int toacc = sc.nextInt();
-        Account toAccount = bank.findAccount(toacc);
-        if(toAccount ==null){
-          System.out.println("Can Not Transfer Money Because Reciever Account Number is Not Correct");
-          return;
-        }
-        System.out.println("Enter Amount To Transfer: ");
-        double amount = sc.nextDouble();
-        boolean isTransfer = fromAccount.transfer(toAccount, amount);
-        if(isTransfer){
-        System.out.println("Money transfer from " + fromAccount.getAccountHolderName() +"'s Account to "+ toAccount.getAccountHolderName() + "'s Account" );
-        }
-      }else{
-        if(fromAccount == null){
-          System.out.println("You Dont Have Any Account");
-        }
-      }
-  }
+  //     if(fromAccount != null ){
+  //       System.out.println("Enter the account Number of Reciever : ");
+  //       int toacc = sc.nextInt();
+  //       Account toAccount = bank.findAccount(toacc);
+  //       if(toAccount ==null){
+  //         System.out.println("Can Not Transfer Money Because Reciever Account Number is Not Correct");
+  //         return;
+  //       }
+  //       System.out.println("Enter Amount To Transfer: ");
+  //       double amount = sc.nextDouble();
+  //       boolean isTransfer = fromAccount.transfer(toAccount, amount);
+  //       if(isTransfer){
+  //       System.out.println("Money transfer from " + fromAccount.getAccountHolderName() +"'s Account to "+ toAccount.getAccountHolderName() + "'s Account" );
+  //       }
+  //     }else{
+  //       if(fromAccount == null){
+  //         System.out.println("You Dont Have Any Account");
+  //       }
+  //     }
+  // }
 
-  static void changePin(){
-    Account account= findAccountByPin();
-    if(account != null){
-      System.out.println("Enter New Pin : ");
-      int newPin = sc.nextInt();
-      account.setPin(newPin);
-      System.out.println("New Pin Set SuccessFully");
-    }
-  }
+  // static void changePin(){
+  //   Account account= findAccountByPin();
+  //   if(account != null){
+  //     System.out.println("Enter New Pin : ");
+  //     int newPin = sc.nextInt();
+  //     account.setPin(newPin);
+  //     System.out.println("New Pin Set SuccessFully");
+  //   }
+  // }
 
 
-  static void checkBalance(){
-    Account account= findAccountByPin();
-    if(account != null){
-      System.out.println("The Balance is: "+account.getBalance());
-    }
-  }
+  // static void checkBalance(){
+  //   Account account= findAccountByPin();
+  //   if(account != null){
+  //     System.out.println("The Balance is: "+account.getBalance());
+  //   }
+  // }
 }
 
