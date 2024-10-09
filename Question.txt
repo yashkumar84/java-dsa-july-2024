@@ -1,0 +1,12 @@
+1 . Remove Duplicate Character From a String ------
+
+ex --- Duggal---- Dugal
+rabbit - rabit
+aaaaabbbbccc -- abc
+
+
+2. Search and Replace Character in a String --- 
+
+aabbccdd - search - b , replace - g
+
+aaggccdd
