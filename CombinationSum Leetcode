@@ -1,0 +1,23 @@
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<Integer> smallList = new ArrayList<>();
+        List<List<Integer>> bigList = new ArrayList<>();
+        combinationSumHelper(candidates , target , smallList , bigList , 0);
+        return bigList;
+    }
+
+    void combinationSumHelper(int[] candidates , int amount , List<Integer> smallList ,List<List<Integer>> bigList, int start ){
+        if(amount < 0)return;
+        if(amount == 0){
+            bigList.add(new ArrayList<>(smallList));
+            return;
+        }
+
+        for(int i = start;i<candidates.length;i++){
+            smallList.add(candidates[i]);
+            combinationSumHelper(candidates , amount - candidates[i] , smallList , bigList , i);
+            smallList.remove(smallList.size() -1 );
+
+        }
+    }
+}
