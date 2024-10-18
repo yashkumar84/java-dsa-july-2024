@@ -1,0 +1,24 @@
+class Solution {
+    public List<List<Integer>> combine(int n, int k) {
+        List<Integer> smallList = new ArrayList<>();
+        List<List<Integer>> bigList = new ArrayList<>();
+        combineHelper(smallList , bigList , 1 , n , k);
+        return bigList;
+    }
+
+    void combineHelper(List<Integer> smallList, List<List<Integer>> bigList,int start , int n , int k){
+        if(smallList.size() == k ){
+            bigList.add(new ArrayList<>(smallList));
+            return;
+        }
+
+
+        for(int i = start;i <=n ;i++){
+            
+                smallList.add(i);
+                combineHelper(smallList , bigList , i + 1 , n , k);
+                smallList.remove(smallList.size() -1);
+            
+        }
+    }
+}
