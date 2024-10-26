@@ -1,0 +1,21 @@
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> ans = new ArrayList<>();
+        generateParanthesisHelper(n , 0 , 0 , "" , ans);
+        return ans;
+    }
+
+    void generateParanthesisHelper(int n , int open , int close ,String result , List<String> ans ){
+        if(result.length() == n * 2){
+            ans.add(result);
+            return;
+        }
+        if(open < n){
+        generateParanthesisHelper(n , open +1,close , result + "(",ans);
+        }
+        if(close < open){
+            generateParanthesisHelper(n , open,close + 1 , result + ")",ans);
+        }
+
+    }
+}
