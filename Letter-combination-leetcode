@@ -1,0 +1,26 @@
+class Solution {
+    public static final String[] KEYPAD = {"" ,"" , "abc","def" , "ghi" , "jkl" , "mno","pqrs" , "tuv","wxyz"};
+    public List<String> letterCombinations(String digits) {
+        List<String> result = new ArrayList();
+        if(digits == null || digits.length() == 0){
+            return result;
+        }
+
+        generateCombination(digits ,0 , "",result  );
+        return result;
+        
+    }
+
+    void generateCombination(String digits ,int index , String comb ,  List<String> result ){
+        if(index == digits.length()){
+            result.add(comb);
+            return;
+        }
+
+        String character = KEYPAD[digits.charAt(index) -  '0'];
+
+        for(char letter : character.toCharArray() ){
+             generateCombination(digits ,index + 1 , comb + letter ,result  );
+        }
+    }
+}
