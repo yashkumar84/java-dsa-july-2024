@@ -1,0 +1,51 @@
+class Solution {
+    public void solveSudoku(char[][] board) {
+        solve(board);
+    }
+
+    boolean solve(char[][] board){
+        for(int row = 0;row < 9;row++){
+            for(int col = 0;col < 9;col++){
+                if(board[row][col] == '.'){
+                    for(char num = '1';num <= '9';num++){
+                        if(isValid(board , row , col , num)){
+                            board[row][col] = num;
+                            if(solve(board)){
+                                return true;
+                            }
+                            else
+                            board[row][col] = '.';
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+        boolean isValid(char[][] board , int row , int col , char num){
+            //Checkk row 
+
+            for(int x = 0;x < 9;x++){
+                if(board[row][x] == num)return false;
+            }
+
+            for(int x = 0;x < 9;x++){
+                if(board[x][col] == num)return false;
+            }
+
+            int startingRow = row - row % 3;
+            int startingCol = col - col % 3;
+
+            for(int i = 0;i<3;i++){
+                for(int j = 0;j<3;j++){
+                    if(board[i + startingRow][j + startingCol] == num)return false;
+                }
+            }
+            return true;
+
+
+        }
+
+}
