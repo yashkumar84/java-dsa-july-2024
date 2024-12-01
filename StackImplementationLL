@@ -1,0 +1,68 @@
+class Node{
+  int data;
+  Node next;
+  Node(int data){
+    this.data = data;
+    this.next = null;
+  }
+}
+
+class Stack{
+    Node head;
+
+    Stack(){
+      this.head = null;
+    }
+
+    void push(int data){
+      
+        Node newNode = new Node(data);
+        if(head == null){
+          head = newNode;
+          return;
+        }
+
+        newNode.next = head;
+        head = newNode;
+        
+    }
+
+    int pop(){
+      if(head == null){
+        System.out.println("Deletion not Possible Stack UnderFlow");
+        return 0;
+      }
+      int data = head.data;
+      head = head.next;
+      return data;
+    }
+  
+    int peek(){
+      if(head == null){
+        System.out.println("Deletion not Possible Stack UnderFlow");
+        return 0;
+      }
+      int data = head.data;
+      return data;
+    }
+  
+}
+
+public class StackImpLL{
+  public static void main(String[] args) {
+    Stack st = new Stack();
+    st.peek();
+    st.push(23);
+    st.push(24);
+    st.push(25);
+    st.push(26);
+    System.out.println(st.pop());
+    System.out.println(st.pop());
+    System.out.println( st.peek());
+    st.push(56);
+    System.out.println( st.pop());
+    System.out.println(st.peek());
+
+  }
+  
+}
