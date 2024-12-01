@@ -1,0 +1,56 @@
+class Stack{
+  int[] arr;
+  int top;
+  int capacity;
+
+  Stack(int capacity){
+    this.capacity = capacity;
+    arr = new int[capacity];
+    top = -1;
+  }
+
+  void push(int data){
+    if(top == capacity -1){
+      System.out.println("Stack Overflow");
+      return;
+    }
+    arr[++top]  = data;
+  }
+
+  int pop(){
+    if(top == -1){
+      System.out.println("Stack UnderFlow ");
+      return 0;
+    }
+    int data = arr[top];
+    top--;
+    return data;
+  }
+
+  int peek(){
+    if(top == -1){
+      System.out.println("Stack UnderFlow ");
+      return 0;
+    }
+    int data = arr[top];
+    return data;
+  }
+}
+
+public class StackImplementationArray {
+ 
+  public static void main(String[] args) {
+    Stack st = new Stack(5);
+    st.push(1);
+    st.push(3);
+    st.push(2);
+    st.push(5);
+    st.push(4);
+    System.out.println(st.peek());
+    System.out.println(st.pop());
+    System.out.println(st.peek());
+    System.out.println(st.peek());
+    System.out.println(st.pop());
+  }
+  
+}
